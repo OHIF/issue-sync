@@ -1,5 +1,14 @@
 const axios = require('axios');
 
+// To see all the fields you _can_ specify, check out this endpoint:
+// GET: https://radicalimaging.atlassian.net/rest/api/3/issue/createmeta
+// Headers: Accept/Content-Type: application/json
+// Auth: Basic
+// https://radicalimaging.atlassian.net/rest/api/3/issue/createmeta?issuetypeIds=10109&expand=projects.issuetypes.fields
+//
+// Attachments:
+// https://developer.atlassian.com/cloud/jira/platform/rest/v3/#api-rest-api-3-issue-issueIdOrKey-attachments-post
+
 /**
  * 
  * Docs:
@@ -13,7 +22,7 @@ const axios = require('axios');
  * @param {string} description 
  * @param {string[]} labels 
  */
-async function createIssue(apiConfig, title, description, labels = []) {
+async function createIssue(apiConfig, title, description, labels = [], { issueNumber, repoName } = {}) {
     const config = Object.assign({
         token: undefined,
         user: 'danny.brown@radicalimaging.com',
@@ -31,7 +40,7 @@ async function createIssue(apiConfig, title, description, labels = []) {
  * @param {*} description 
  * @param {*} labels 
  */
-function _createRequestPayload(title, description, labels = []) {
+function _createRequestPayload(title, description, labels = [], { issueNumber, repoName} = {}) {
     return {
         update: {},
         fields: {
@@ -57,6 +66,8 @@ function _createRequestPayload(title, description, labels = []) {
                     }
                 ]
             },
+            customfield_10210: issueNumber,   // Issue Number (number)
+            customfield_10209: repoName,  // Repository (string)
             reporter: {
                 id: "5cfa837ab87c300f36eb9549" // danny.brown
             },

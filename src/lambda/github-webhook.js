@@ -16,7 +16,7 @@ exports.handler = async function(event, context) {
 
         if (isOpenedIssue) {
             // TODO: Differentiate OHIF vs Cornerstonejs?
-            const { html_url: url, title, body } = issue;
+            const { html_url: url, title, body, number: issueNumber } = issue;
             const { full_name: repoName } = repository;
             const { login: reporter } = sender;
 
@@ -25,7 +25,10 @@ exports.handler = async function(event, context) {
                 'triage',
                 `gh-repo:${repoName}`,
                 `gh-reporter:${reporter}`
-            ]);
+            ], {
+                repoName,
+                issueNumber,
+            });
 
             return {
                 statusCode: 200,
