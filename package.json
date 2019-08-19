@@ -1,0 +1,24 @@
+{
+  "name": "issue-sync",
+  "version": "1.0.0",
+  "description": "- [Atlassian 3LO OAuth](https://developer.atlassian.com/cloud/jira/platform/oauth-2-authorization-code-grants-3lo-for-apps/)\r - [Netlify Functions](https://www.netlify.com/docs/functions/)",
+  "main": "index.js",
+  "scripts": {
+    "build": "netlify-lambda build src/lambda",
+    "dev": "yarn run start",
+    "start": "netlify-lambda serve src/lambda"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OHIF/issue-sync.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OHIF/issue-sync/issues"
+  },
+  "homepage": "https://github.com/OHIF/issue-sync#readme",
+  "dependencies": {
+    "netlify-lambda": "^1.6.2"
+  }
+}
