@@ -1,7 +1,6 @@
 // load any variables in our .env file into process.env,
 // unless those variables are already set.
 require('dotenv').config();
-
 const axios = require('axios');
 
 exports.handler = async function(event, context) {
