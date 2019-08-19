@@ -14,6 +14,11 @@ yarn run dev
 # Navigate to: `http://localhost:9000/.netlify/functions/hello-world`
 ```
 
+### Environment Variables
+
+- `ATL_ISSUE_SYNC_CLIENT_ID`
+- `ATL_ISSUE_SYNC_SECRET`
+
 ## Reading
 
 - [Atlassian 3LO OAuth](https://developer.atlassian.com/cloud/jira/platform/oauth-2-authorization-code-grants-3lo-for-apps/)
