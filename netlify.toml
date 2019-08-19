@@ -1,0 +1,8 @@
+# 
+# Reference: https://www.netlify.com/docs/netlify-toml-reference/
+#
+#
+[build]
+  command = "yarn run build"  #
+  functions = "functions/"    # Directory with the serverless Lambda functions to deploy to AWS.
+  publish = "www"             # Contains files to host statically
