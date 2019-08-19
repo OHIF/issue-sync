@@ -25,14 +25,18 @@ exports.handler = async function(event, context) {
 
             // const jwt = atResponse.data.access_token;
             const jiraIssueBody = `URL: ${url}` + body;          
-            const response = await _tryCreateJiraIssue(undefined, title, jiraIssueBody, [
+            const ciResponse = await _tryCreateJiraIssue(undefined, title, jiraIssueBody, [
                 `gh-repo:${repoName}`,
                 `gh-reporter:${reporter}`
             ]);
 
+            if (!ciResponse.success || ciResponse.error) {
+                throw new Error(ciResponse.error);
+            }
+
             return {
                 statusCode: 200,
-                body: JSON.stringify(response.data)
+                body: JSON.stringify(ciResponse.response.data)
             };
         }
 
