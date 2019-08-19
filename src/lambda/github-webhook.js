@@ -17,15 +17,15 @@ exports.handler = async function(event, context) {
             const { full_name: repoName } = repository;
             const { login: reporter } = sender;
 
-            const atResponse = await _tryGetJiraAccessTokenResponse();
+            // const atResponse = await _tryGetJiraAccessTokenResponse();
 
-            if (!atResponse.success || atResponse.error) {
-                throw new Error(atResponse.error);
-            }
+            // if (!atResponse.success || atResponse.error) {
+            //     throw new Error(atResponse.error);
+            // }
 
-            const jwt = atResponse.data.access_token;
+            // const jwt = atResponse.data.access_token;
             const jiraIssueBody = `URL: ${url}` + body;          
-            const response = await _tryCreateJiraIssue(jwt, title, jiraIssueBody, [
+            const response = await _tryCreateJiraIssue(undefined, title, jiraIssueBody, [
                 `gh-repo:${repoName}`,
                 `gh-reporter:${reporter}`
             ]);
@@ -58,8 +58,9 @@ exports.handler = async function(event, context) {
  * @param {*} description 
  * @param {*} labels 
  */
-async function _tryCreateJiraIssue(accessToken, summary, description, labels) {
+async function _tryCreateJiraIssue(accessToken, summary, description, labels = []) {
     try {
+        const { ATL_API_TOKEN } = process.env;
         const params = {
             update: {},
             fields: {
@@ -89,17 +90,19 @@ async function _tryCreateJiraIssue(accessToken, summary, description, labels) {
                 reporter: {
                     id: "5cfa837ab87c300f36eb9549" // danny.brown
                 },
-                labels: [
-
-                ]
+                labels
             }
         };
         const response = await axios.post(
-            '/rest/api/3/issue',
+            'https://radicalimaging.atlassian.net/rest/api/3/issue',
             params,
             { 
+                auth: {
+                    username: 'danny.brown@radicalimaging.com',
+                    password: ATL_API_TOKEN
+                },
                 headers: { 
-                    Authorization: `Bearer ${accessToken}`,
+                    // Authorization: `Bearer ${accessToken}`,
                     Accept: "application/json",
                     "Content-Type": "application/json"
                 },
