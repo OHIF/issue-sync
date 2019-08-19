@@ -1,14 +1,53 @@
-import axios from "axios"
+// load any variables in our .env file into process.env,
+// unless those variables are already set.
+require('dotenv').config();
 
-exports.handler = function(event, context, callback) {
-    if (!event || !event.queryStringParameters) {
+const axios = require('axios');
 
+exports.handler = async function(event, context, callback) {
+    if (!event || event.httpMethod !== "GET") {
+        return {
+            statusCode: 200,
+            // headers,
+            body: "This was not a GET request!"
+        };
     }
 
+    if (!event.queryStringParameters) {
+        return {
+            statusCode: 200,
+            // headers,
+            body: JSON.stringify({
+              status: "failed",
+              message: "Required information is missing!"
+            })
+        };
+    }
+
+    const { ATL_ISSUE_SYNC_CLIENT_ID, ATL_ISSUE_SYNC_SECRET, ATL_CALLBACK_URL } = process.env;
     const { code, state } = event.queryStringParameters;
     const { body, isBase64Encoded } = event;
+    const isInitialAuthCodeRequest = state === 'initial';
 
-    // TODO: Exchange AuthCode for AccessToken
+    if (isInitialAuthCodeRequest) { 
+        const response = await axios.post(
+            "https://auth.atlassian.com/oauth/token",
+            { 
+                headers: { Accept: "application/json" },
+                data: {
+                    grant_type: "authorization_code",
+                    client_id: ATL_ISSUE_SYNC_CLIENT_ID,
+                    client_secret: ATL_ISSUE_SYNC_SECRET,
+                    code,
+                    redirect_uri: ATL_CALLBACK_URL
+                }
+            });
+
+        callback(null, {
+            statusCode: 200,
+            body: JSON.stringify(response)
+        });
+    }
 
     // your server-side functionality
     callback(null, {
