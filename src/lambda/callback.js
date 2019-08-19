@@ -31,35 +31,39 @@ exports.handler = async function(event, context) {
         const isInitialAuthCodeRequest = state === 'initial';
 
         if (isInitialAuthCodeRequest) { 
+            const params = {
+                grant_type: "authorization_code",
+                client_id: ATL_ISSUE_SYNC_CLIENT_ID,
+                client_secret: ATL_ISSUE_SYNC_SECRET,
+                code,
+                redirect_uri: ATL_CALLBACK_URL
+            };
             const response = await axios.post(
                 "https://auth.atlassian.com/oauth/token",
+                params,
                 { 
-                    headers: { Accept: "application/json" },
-                    data: JSON.stringify({
-                        grant_type: "authorization_code",
-                        client_id: ATL_ISSUE_SYNC_CLIENT_ID,
-                        client_secret: ATL_ISSUE_SYNC_SECRET,
-                        code,
-                        redirect_uri: ATL_CALLBACK_URL
-                    })
+                    headers: { 
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
+                    },
                 });
 
             return {
                 statusCode: 200,
-                body: JSON.stringify(response)
+                body: 'Response from Atlassian: ' + JSON.stringify(response.data)
             };
         }
 
         // your server-side functionality
         return {
             statusCode: 200,
-            body: JSON.stringify(body)
+            body: 'Fallback: ' + JSON.stringify(body)
         };
     } catch(err) {
         console.log(err) // output to netlify function log
         return {
             statusCode: 500,
-            body: JSON.stringify({ msg: err.message + ` ${ATL_ISSUE_SYNC_CLIENT_ID}` }) // Could be a custom message or object i.e. JSON.stringify(err)
+            body: 'Err: ' + JSON.stringify({ msg: err.message + ` ${ATL_ISSUE_SYNC_CLIENT_ID}` }) // Could be a custom message or object i.e. JSON.stringify(err)
         }
     }
 }
