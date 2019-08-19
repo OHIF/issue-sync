@@ -35,13 +35,13 @@ exports.handler = async function(event, context) {
                 "https://auth.atlassian.com/oauth/token",
                 { 
                     headers: { Accept: "application/json" },
-                    data: {
+                    data: JSON.stringify({
                         grant_type: "authorization_code",
                         client_id: ATL_ISSUE_SYNC_CLIENT_ID,
                         client_secret: ATL_ISSUE_SYNC_SECRET,
                         code,
                         redirect_uri: ATL_CALLBACK_URL
-                    }
+                    })
                 });
 
             return {
@@ -59,7 +59,7 @@ exports.handler = async function(event, context) {
         console.log(err) // output to netlify function log
         return {
             statusCode: 500,
-            body: JSON.stringify({ msg: err.message }) // Could be a custom message or object i.e. JSON.stringify(err)
+            body: JSON.stringify({ msg: err.message + ` ${ATL_ISSUE_SYNC_CLIENT_ID}` }) // Could be a custom message or object i.e. JSON.stringify(err)
         }
     }
 }
