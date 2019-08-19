@@ -1,7 +1,7 @@
 
 const _createIssue = require('./createIssue.js');
 
-export default class JiraRestClient {
+class JiraRestClient {
     constructor(config){
         this.API_CONFIG = {
             token: config.apiToken,
@@ -13,3 +13,5 @@ export default class JiraRestClient {
         this.createIssue = _createIssue.bind(this, this.API_CONFIG);
     }
 }
+
+module.exports = JiraRestClient;

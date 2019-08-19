@@ -20,7 +20,7 @@ exports.handler = async function(event, context) {
             const { full_name: repoName } = repository;
             const { login: reporter } = sender;
 
-            const jiraIssueBody = `URL: [${url}](${url})${NEW_LINE}${NEW_LINE}` + body;          
+            const jiraIssueBody = `URL: [${url}](${url})${NEW_LINE}${NEW_LINE} ${body}`;          
             const response = await jiraClient.createIssue(title, jiraIssueBody, [
                 'triage',
                 `gh-repo:${repoName}`,

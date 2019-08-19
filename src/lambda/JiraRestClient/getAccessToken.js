@@ -20,7 +20,7 @@ const axios = require('axios');
  * @param {string} code - The authorization code returned by a user initated OAuth grant request
  * @param {string} redirect_uri - The expected / already configured `redirect_uri` for the JIRA app (/.netlify/functions/callback)
  */
-export default async function getAccessToken(client_id, client_secret, code, redirect_uri) {
+async function getAccessToken(client_id, client_secret, code, redirect_uri) {
     const params = {
         grant_type: "authorization_code",
         client_id,
@@ -41,3 +41,5 @@ export default async function getAccessToken(client_id, client_secret, code, red
 
     return response.data;
 }
+
+module.exports = getAccessToken;

@@ -11,7 +11,7 @@
  * @param {string} description 
  * @param {string[]} labels 
  */
-export default async function createIssue(apiConfig, title, description, labels = []) {
+async function createIssue(apiConfig, title, description, labels = []) {
     const config = Object.assign({
         token: undefined,
         user: 'danny.brown@radicalimaging.com',
@@ -87,3 +87,5 @@ function _createRequestPromise(baseUrl, user, token, payload) {
         }
     )
 }
+
+module.exports = createIssue;
