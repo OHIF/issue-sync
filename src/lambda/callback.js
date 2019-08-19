@@ -4,56 +4,64 @@ require('dotenv').config();
 
 const axios = require('axios');
 
-exports.handler = async function(event, context, callback) {
-    if (!event || event.httpMethod !== "GET") {
+exports.handler = async function(event, context) {
+    try {
+        if (!event || event.httpMethod !== "GET") {
+            return {
+                statusCode: 200,
+                // headers,
+                body: "This was not a GET request!"
+            };
+        }
+
+        if (!event.queryStringParameters) {
+            return {
+                statusCode: 200,
+                // headers,
+                body: JSON.stringify({
+                status: "failed",
+                message: "Required information is missing!"
+                })
+            };
+        }
+
+        const { ATL_ISSUE_SYNC_CLIENT_ID, ATL_ISSUE_SYNC_SECRET, ATL_CALLBACK_URL } = process.env;
+        const { code, state } = event.queryStringParameters;
+        const { body, isBase64Encoded } = event;
+        const isInitialAuthCodeRequest = state === 'initial';
+
+        if (isInitialAuthCodeRequest) { 
+            const response = await axios.post(
+                "https://auth.atlassian.com/oauth/token",
+                { 
+                    headers: { Accept: "application/json" },
+                    data: {
+                        grant_type: "authorization_code",
+                        client_id: ATL_ISSUE_SYNC_CLIENT_ID,
+                        client_secret: ATL_ISSUE_SYNC_SECRET,
+                        code,
+                        redirect_uri: ATL_CALLBACK_URL
+                    }
+                });
+
+            return {
+                statusCode: 200,
+                body: JSON.stringify(response)
+            };
+        }
+
+        // your server-side functionality
         return {
             statusCode: 200,
-            // headers,
-            body: "This was not a GET request!"
+            body: JSON.stringify(body)
         };
-    }
-
-    if (!event.queryStringParameters) {
+    } catch(ex) {
+        console.log(err) // output to netlify function log
         return {
-            statusCode: 200,
-            // headers,
-            body: JSON.stringify({
-              status: "failed",
-              message: "Required information is missing!"
-            })
-        };
+            statusCode: 500,
+            body: JSON.stringify({ msg: err.message }) // Could be a custom message or object i.e. JSON.stringify(err)
+        }
     }
-
-    const { ATL_ISSUE_SYNC_CLIENT_ID, ATL_ISSUE_SYNC_SECRET, ATL_CALLBACK_URL } = process.env;
-    const { code, state } = event.queryStringParameters;
-    const { body, isBase64Encoded } = event;
-    const isInitialAuthCodeRequest = state === 'initial';
-
-    if (isInitialAuthCodeRequest) { 
-        const response = await axios.post(
-            "https://auth.atlassian.com/oauth/token",
-            { 
-                headers: { Accept: "application/json" },
-                data: {
-                    grant_type: "authorization_code",
-                    client_id: ATL_ISSUE_SYNC_CLIENT_ID,
-                    client_secret: ATL_ISSUE_SYNC_SECRET,
-                    code,
-                    redirect_uri: ATL_CALLBACK_URL
-                }
-            });
-
-        callback(null, {
-            statusCode: 200,
-            body: JSON.stringify(response)
-        });
-    }
-
-    // your server-side functionality
-    callback(null, {
-        statusCode: 200,
-        body: JSON.stringify(body)
-    });
 }
 
 // {
