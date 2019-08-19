@@ -81,7 +81,7 @@ async function _tryCreateJiraIssue(accessToken, summary, description, labels = [
                             content: [
                                 {
                                     text: description,
-                                    type: text,
+                                    type: "text",
                                 }
                             ],
                         }
