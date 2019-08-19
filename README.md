@@ -11,7 +11,7 @@ yarn run dev
 
 # Test endpoints by calling them in your browser,
 # or with a tool like Postman
-# Navigate to: `http://localhost:9000/.netlify/functions/hello_world`
+# Navigate to: `http://localhost:9000/.netlify/functions/hello-world`
 ```
 
 ## Reading
