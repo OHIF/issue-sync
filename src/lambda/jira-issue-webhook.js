@@ -57,13 +57,21 @@ exports.handler = async function(event, context) {
 function _createGitHubIssue(gitHubClient, jiraIssue) {
     // https://jira.atlassian.com/rest/api/2/issue/JRA-2000?_ga=2.28373563.661224939.1566999997-1174806867.1565374905
     const { summary, description, labels: jiraLabels, issueType, status, assignee } = jiraIssue.fields;
-    // const issueTypeName = issueType.name; // Story, Bug, Task
     // Status --> Column ("To Do")
 
-    const labels = [
-        // story, bug, task: t_type
-        'Up For Grabs :raising_hand_woman:'
-    ];
+    const labels = [];
+
+    const isUpForGrabs = true; // TODO: No Assignee
+    const hasIssueTypeName = issueType && issueType.name;
+    
+    if (isUpForGrabs) {
+        labels.push('Up For Grabs :raising_hand_woman:');
+    }
+
+    if (hasIssueTypeName) {
+        const ghIssueTypeLabel = IssueNameToLabelMap[issueType.name] || IssueNameToLabelMap["Story"];
+        labels.push(ghIssueTypeLabel);
+    }
 
     if (jiraLabels && jiraLabels.length) {
         // Add?
@@ -73,6 +81,12 @@ function _createGitHubIssue(gitHubClient, jiraIssue) {
     return gitHubClient.createIssue(summary, description, undefined, undefined, labels);
 }
 
+
+const IssueNameToLabelMap = {
+    "Bug": "Bug: Verified :bug:",
+    "Story": "Story :raised_hands:",
+    "Task": "Task: Refactor :hammer_and_wrench:",
+}
 
 const fields = {
     "COMMUNITY_ISSUE_NUMBER": "customfield_10210"
