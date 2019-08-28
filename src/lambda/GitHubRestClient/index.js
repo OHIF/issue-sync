@@ -1,5 +1,6 @@
 
 const _editIssue = require('./editIssue.js');
+const _createIssue = require('./createIssue.js');
 
 class GitHubRestClient {
     constructor(config){
@@ -11,6 +12,7 @@ class GitHubRestClient {
 
         // Wire up methods
         this.editIssue = _editIssue.bind(this, this.API_CONFIG);
+        this.createIssue = _createIssue.bind(this, this.API_CONFIG);
     }
 }
 
