@@ -16,8 +16,7 @@ yarn run dev
 
 ### Environment Variables
 
-- `ATL_ISSUE_SYNC_CLIENT_ID`
-- `ATL_ISSUE_SYNC_SECRET`
+See the `.env.example` file in the root of this directory. Copy it, and name it `.env` to specify variables that can be used for local development.
 
 ## Reading
 
