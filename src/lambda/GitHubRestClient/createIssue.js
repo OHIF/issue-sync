@@ -9,18 +9,17 @@ const axios = require('axios');
  * @param {string} [assignee] 
  * @param {number} [milestone]
  * @param {string[]} [labels]
- * @param {string[]} [assignees] 
+ * @param {string[]} [assignees]
+ * @returns {Promise}
  */
-async function createIssue(apiConfig, title, body, assignee, milestone, labels, assignees) {
+function createIssue(apiConfig, title, body, assignee, milestone, labels, assignees) {
     const config = Object.assign({
         token: undefined,
         user: 'ohif-bot',
         baseUrl: 'https://api.github.com',
     }, apiConfig);
     const requestPayload = _createRequestPayload(title, body, assignee, milestone, labels, assignees);
-    const response = await _createRequestPromise(config.baseUrl, config.user, config.token, requestPayload);
-
-    return response.data;
+    return _createRequestPromise(config.baseUrl, config.user, config.token, requestPayload);
 }
 
 /**
@@ -38,7 +37,6 @@ function _createRequestPayload(title, body, assignee, milestone, labels, assigne
         body,
         assignee,
         milestone,
-        state,
         labels,
         assignees,
     };
@@ -56,7 +54,7 @@ function _createRequestPayload(title, body, assignee, milestone, labels, assigne
  * @param {*} payload 
  */
 function _createRequestPromise(baseUrl, user, token, payload) {
-    return axios.patch(
+    return axios.post(
         `${baseUrl}/repos/OHIF/Viewers/issues`,
         payload,
         { 
@@ -65,7 +63,7 @@ function _createRequestPromise(baseUrl, user, token, payload) {
                 password: token
             },
             headers: { 
-                // Authorization: `Bearer ${accessToken}`,
+                // Authorization: `token ${token}`,
                 Accept: "application/json",
                 "Content-Type": "application/json"
             },
