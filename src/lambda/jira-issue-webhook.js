@@ -28,8 +28,10 @@ exports.handler = async function(event, context) {
                     
                     // Update Jira w/ created issue's number
                     await jiraClient.editIssue(jiraIssueId, {
-                        // TODO: ENUM THIS
-                        customfield_10211: parseInt(createdIssueNumber)
+                        customFields: [
+                            // TODO: ENUM THIS
+                            { name: "customfield_10211", value: parseInt(createdIssueNumber) }
+                        ]
                     });
                 break;
             case "issue_updated":
