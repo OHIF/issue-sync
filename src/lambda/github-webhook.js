@@ -2,12 +2,16 @@
 // unless those variables are already set.
 require('dotenv').config();
 const JiraRestClient = require('./JiraRestClient/index.js');
+const GitHubRestClient = require('./GitHubRestClient/index.js');
 const NEW_LINE = '\r\n';
 
 exports.handler = async function(event, context) {
     try {
-        const { ATL_API_TOKEN} = process.env;
+        // Create REST Clients
+        const { ATL_API_TOKEN, GITHUB_API_TOKEN } = process.env;
         const jiraClient = new JiraRestClient({ apiToken: ATL_API_TOKEN });
+        const gitHubClient = new GitHubRestClient({ apiToken: GITHUB_API_TOKEN });
+        // Parse Payload
         const payload = JSON.parse(event.body);
         const { action, issue, repository, organization, sender } = payload;
 
