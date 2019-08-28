@@ -19,7 +19,7 @@ exports.handler = async function(event, context) {
         // https://developer.atlassian.com/cloud/jira/platform/webhooks/
         const { timestamp, webhookEvent, issue_event_type_name, user, issue: jiraIssue, changelog, comment } = payload;
         
-        let request = new Promise();
+        let request = new Promise(() => {});
 
         switch(issue_event_type_name) {
             case "issue_created":
