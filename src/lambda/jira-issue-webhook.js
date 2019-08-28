@@ -48,6 +48,7 @@ exports.handler = async function(event, context) {
         //     body: "Issue not open"
         // };
     } catch(err) {
+        console.log(err);
         return {
             statusCode: 500,
             body: 'ERR: ' + JSON.stringify({ msg: (err.message || err) })
@@ -94,6 +95,23 @@ function _createGitHubIssue(gitHubClient, jiraIssue) {
 
     // TODO: Add linked issue to description, need custom field.
     return gitHubClient.createIssue(summary, description, undefined, undefined, labels);
+}
+
+function _updateGitHubIssue(gitHubClient, jiraIssue, changelog) {
+    const hasChangelogItems = changelog && changelog.items && changelog.items.length;
+
+    if (!hasChangelogItems) {
+        return;
+    }
+
+    for (var i = 0; i < changelog.items.length; i++) {
+        const change = changelog.items[i];
+        const { field, fromString, toString } = change;
+
+        // field -->
+        // - "description"
+        // - "Linked Issue Number"
+    }
 }
 
 
