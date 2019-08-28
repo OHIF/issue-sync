@@ -35,6 +35,7 @@ async function createIssue(apiConfig, title, description, labels = [], { issueNu
 }
 
 /**
+ * https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/
  * 
  * @param {*} title 
  * @param {*} description 

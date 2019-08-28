@@ -12,25 +12,31 @@ exports.handler = async function(event, context) {
         // TODO: Update JIRA to use new linked GitHub issue Id
 
         // Create REST Clients
-        const { GITHUB_API_TOKEN } = process.env;
+        const { ATL_API_TOKEN, GITHUB_API_TOKEN } = process.env;
+        const jiraClient = new JiraRestClient({ apiToken: ATL_API_TOKEN });
         const gitHubClient = new GitHubRestClient({ apiToken: GITHUB_API_TOKEN });
 
         const payload = JSON.parse(event.body);
         // https://developer.atlassian.com/cloud/jira/platform/webhooks/
         const { timestamp, webhookEvent, issue_event_type_name, user, issue: jiraIssue, changelog, comment } = payload;
-        
-        let request = new Promise(() => {});
+        const jiraIssueId = jiraIssue.id;
 
         switch(issue_event_type_name) {
             case "issue_created":
-                    request = _createGitHubIssue(gitHubClient, jiraIssue);
-                    // response.data.number --> issueNumber
+                    const createGitHubIssueResponse = await _createGitHubIssue(gitHubClient, jiraIssue);
+                    const createdIssueNumber = createGitHubIssueResponse.data.number;
+                    
+                    // Update Jira w/ created issue's number
+                    await jiraClient.editIssue(jiraIssueId, {
+                        // TODO: ENUM THIS
+                        customfield_10211: parseInt(createdIssueNumber)
+                    });
                 break;
+            case "issue_updated":
+                    // request = _updateGitHubIssue(gitHubClient, jiraIssue, changelog);
             default:
                 throw new Error(`Unsupported JIRA Event Type: ${issue_event_type_name || 'no-event-type'}`);
         }
-
-        const response = await request;
     
         return {
             statusCode: 200,
