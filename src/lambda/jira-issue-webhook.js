@@ -24,6 +24,7 @@ exports.handler = async function(event, context) {
         switch(issue_event_type_name) {
             case "issue_created":
                     request = _createGitHubIssue(gitHubClient, jiraIssue);
+                    // response.data.number --> issueNumber
                 break;
             default:
                 throw new Error(`Unsupported JIRA Event Type: ${issue_event_type_name || 'no-event-type'}`);
@@ -56,13 +57,13 @@ exports.handler = async function(event, context) {
  */
 function _createGitHubIssue(gitHubClient, jiraIssue) {
     // https://jira.atlassian.com/rest/api/2/issue/JRA-2000?_ga=2.28373563.661224939.1566999997-1174806867.1565374905
-    const { summary, description, labels: jiraLabels, issueType, status, assignee } = jiraIssue.fields;
+    const { summary, description, labels: jiraLabels, issuetype, status, assignee } = jiraIssue.fields;
     // Status --> Column ("To Do")
 
     const labels = [];
 
-    const isUpForGrabs = true; // TODO: No Assignee
-    const hasIssueTypeName = issueType && issueType.name;
+    const isUpForGrabs = assignee === null;
+    const hasIssueTypeName = issuetype && issuetype.name;
     const hasLabels = jiraLabels && jiraLabels.length;
     
     if (isUpForGrabs) {
@@ -70,7 +71,7 @@ function _createGitHubIssue(gitHubClient, jiraIssue) {
     }
 
     if (hasIssueTypeName) {
-        const ghIssueTypeLabel = IssueNameToLabelMap[issueType.name] || IssueNameToLabelMap["Story"];
+        const ghIssueTypeLabel = IssueNameToLabelMap[issuetype.name] || IssueNameToLabelMap["Story"];
         labels.push(ghIssueTypeLabel);
     }
 
