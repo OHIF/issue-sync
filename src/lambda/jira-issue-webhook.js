@@ -63,6 +63,7 @@ function _createGitHubIssue(gitHubClient, jiraIssue) {
 
     const isUpForGrabs = true; // TODO: No Assignee
     const hasIssueTypeName = issueType && issueType.name;
+    const hasLabels = jiraLabels && jiraLabels.length;
     
     if (isUpForGrabs) {
         labels.push('Up For Grabs :raising_hand_woman:');
@@ -73,8 +74,15 @@ function _createGitHubIssue(gitHubClient, jiraIssue) {
         labels.push(ghIssueTypeLabel);
     }
 
-    if (jiraLabels && jiraLabels.length) {
-        // Add?
+    if (hasLabels) {
+        for (var i = 0; i < jiraLabels.length; i++) {
+            const jiraLabel = jiraLabels[i];
+            const gitHubLabel = JiraIssueLabelToGitHubLabelMap[jiraLabel];
+
+            if (gitHubLabel) {
+                labels.push(gitHubLabel);
+            }
+        }
     }
 
     // TODO: Add linked issue to description, need custom field.
@@ -86,6 +94,10 @@ const IssueNameToLabelMap = {
     "Bug": "Bug: Verified :bug:",
     "Story": "Story :raised_hands:",
     "Task": "Task: Refactor :hammer_and_wrench:",
+}
+
+const JiraIssueLabelToGitHubLabelMap = {
+    "Extension:Cornerstone": "Extension: Cornerstone"
 }
 
 const fields = {
