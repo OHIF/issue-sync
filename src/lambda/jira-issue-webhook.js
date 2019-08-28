@@ -19,7 +19,7 @@ exports.handler = async function(event, context) {
         // https://developer.atlassian.com/cloud/jira/platform/webhooks/
         const { timestamp, event, user, issue, changelog, comment } = payload;
         // https://jira.atlassian.com/rest/api/2/issue/JRA-2000?_ga=2.28373563.661224939.1566999997-1174806867.1565374905
-        const { summary, description, labels, status, assignee } = issue.fields;
+        const { summary, description, labels: jiraLabels, status, assignee } = issue.fields;
         const labels = [
             // story, bug, task: t_type
             'Up For Grabs :raising_hand_woman:'
