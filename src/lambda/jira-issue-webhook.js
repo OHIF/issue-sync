@@ -2,7 +2,7 @@
 // unless those variables are already set.
 require('dotenv').config();
 const GitHubRestClient = require('./GitHubRestClient/index.js');
-const NEW_LINE = '\r\n';
+const JiraRestClient = require('./JiraRestClient/index.js');
 
 exports.handler = async function(event, context) {
     try {
