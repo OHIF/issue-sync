@@ -67,7 +67,7 @@ function _createRequestPayload(customFields) {
  * @returns {Promise}
  */
 function _createRequestPromise(baseUrl, user, token, payload, issueIdOrKey) {
-    return axios.post(
+    return axios.put(
         `${baseUrl}/rest/api/3/issue/${issueIdOrKey}`,
         payload,
         { 
