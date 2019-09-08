@@ -21,7 +21,7 @@ exports.handler = async function(event, context) {
         const { timestamp, webhookEvent, issue_event_type_name, user, issue: jiraIssue, changelog, comment } = payload;
         const jiraIssueId = jiraIssue.id;
 
-        if (issue_created !== "issue_created") {
+        if (issue_event_type_name !== "issue_created") {
             return {
                 statusCode: 200,
                 body: "No action taken"
